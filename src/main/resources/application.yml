@@ -1,0 +1,9 @@
+spring:
+  datasource:
+    url: jdbc:postgresql://localhost:5432/unitechdb
+    username: postgres
+    password: Azerbaycan1234
+  jpa:
+    hibernate:
+      ddl-auto: none
+    show-sql: true
