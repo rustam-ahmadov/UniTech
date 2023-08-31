@@ -53,7 +53,7 @@ public class AuthenticationService {
                     )
             );
         } catch (BadCredentialsException exception) {
-            throw new UniTechException(exception.getMessage(), HttpStatus.BAD_REQUEST);
+            throw new UniTechException(ResponseDetails.USER_PASSWORD_WRONG);
         }
         UserDetails user = userService.loadUserByUsername(request.getEmail());
         final String jwtToken = jwtService.generateToken(user);

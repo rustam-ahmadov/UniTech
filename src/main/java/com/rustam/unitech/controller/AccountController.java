@@ -3,7 +3,9 @@ package com.rustam.unitech.controller;
 
 import com.rustam.unitech.dto.request.account.AccountCreationRequest;
 import com.rustam.unitech.dto.request.account.AccountRequest;
+import com.rustam.unitech.dto.request.account.TransferRequest;
 import com.rustam.unitech.dto.response.account.AccountResponse;
+import com.rustam.unitech.enums.ResponseDetails;
 import com.rustam.unitech.service.AccountService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -24,6 +26,7 @@ public class AccountController {
         return ResponseEntity.status(HttpStatus.CREATED)
                 .body(accountService.create(request));
     }
+
     @PostMapping
     public ResponseEntity<AccountResponse> get(@RequestBody @Valid AccountRequest request) {
         return ResponseEntity.ok(accountService.find(request));
@@ -35,4 +38,11 @@ public class AccountController {
                 .body(accountService.getAll());
     }
 
+    @PostMapping("/transfer")
+    public ResponseEntity<String> transfer(@RequestBody @Valid TransferRequest request) {
+        ResponseDetails details = accountService.transfer(request);
+        return ResponseEntity
+                .status(details.getHttpStatus())
+                .body(details.getMessage());
+    }
 }
