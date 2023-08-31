@@ -29,8 +29,8 @@ public class User implements UserDetails {
 
     @Enumerated(EnumType.STRING )
     private Role role;
-    @OneToMany(mappedBy = "user")
-    private Set<Account> accounts;
+    @OneToMany(mappedBy = "user", orphanRemoval = true , fetch = FetchType.EAGER)
+    private List<Account> accounts;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {

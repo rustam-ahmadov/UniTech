@@ -5,10 +5,13 @@ import com.rustam.unitech.dto.request.account.AccountCreationRequest;
 import com.rustam.unitech.dto.request.account.AccountRequest;
 import com.rustam.unitech.dto.response.account.AccountResponse;
 import com.rustam.unitech.service.AccountService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
@@ -16,15 +19,20 @@ import org.springframework.web.bind.annotation.*;
 public class AccountController {
     private final AccountService accountService;
 
+    @PostMapping("/create")
+    public ResponseEntity<AccountResponse> create(@RequestBody @Valid AccountCreationRequest request) {
+        return ResponseEntity.status(HttpStatus.CREATED)
+                .body(accountService.create(request));
+    }
     @PostMapping
-    public ResponseEntity<AccountResponse> get(@RequestBody AccountRequest request) {
+    public ResponseEntity<AccountResponse> get(@RequestBody @Valid AccountRequest request) {
         return ResponseEntity.ok(accountService.find(request));
     }
 
-    @PostMapping("/create")
-    public ResponseEntity<AccountResponse> create(@RequestBody AccountCreationRequest request) {
+    @GetMapping("/all")
+    public ResponseEntity<List<AccountResponse>> getAll() {
         return ResponseEntity.status(HttpStatus.CREATED)
-                .body(accountService.create(request));
+                .body(accountService.getAll());
     }
 
 }

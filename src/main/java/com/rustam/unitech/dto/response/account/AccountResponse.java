@@ -19,6 +19,7 @@ public class AccountResponse {
         accountResponse.number = account.getNumber();
         accountResponse.amount = account.getAmount();
         accountResponse.lastActivity = account.getLastActivity();
+        accountResponse.isActive = account.isActive();
         return accountResponse;
     }
 }

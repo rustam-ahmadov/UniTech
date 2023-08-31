@@ -11,11 +11,16 @@ import com.rustam.unitech.repository.AccountRepository;
 import com.rustam.unitech.utils.CardNumberGenerator;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Optional;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -25,7 +30,7 @@ public class AccountService {
     private final UserDetailsService userDetailsService;
 
     public AccountResponse find(AccountRequest request) {
-        final int pin = request.pin();
+        final int pin = request.getPin();
         Account account = accountRepository.
                 findByPin(pin)
                 .orElseThrow(() -> new UniTechException(ResponseDetails.ACCOUNT_NOT_FOUND));
@@ -50,5 +55,12 @@ public class AccountService {
         accountRepository.save(account);
 
         return  AccountResponse.from(account);
+    }
+
+    public List<AccountResponse> getAll() {
+        User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        return user.getAccounts().stream()
+                .map(AccountResponse::from)
+                .collect(Collectors.toList());
     }
 }

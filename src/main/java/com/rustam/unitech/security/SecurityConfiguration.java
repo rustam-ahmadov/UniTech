@@ -22,7 +22,6 @@ public class SecurityConfiguration {
     private final AuthenticationEntryPoint authenticationEntryPoint;
 
 
-
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
 
