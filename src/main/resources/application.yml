@@ -5,5 +5,5 @@ spring:
     password: Azerbaycan1234
   jpa:
     hibernate:
-      ddl-auto: none
+      ddl-auto: create-drop
     show-sql: true
