@@ -9,7 +9,9 @@ import com.rustam.unitech.enums.Role;
 import com.rustam.unitech.exception.UniTechException;
 import com.rustam.unitech.security.JwtService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -43,12 +45,16 @@ public class AuthenticationService {
     }
 
     public AuthenticationResponse authenticate(AuthenticationRequest request) {
-        authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(
-                        request.getEmail(),
-                        request.getPassword()
-                )
-        );
+        try {
+            authenticationManager.authenticate(
+                    new UsernamePasswordAuthenticationToken(
+                            request.getEmail(),
+                            request.getPassword()
+                    )
+            );
+        } catch (BadCredentialsException exception) {
+            throw new UniTechException(exception.getMessage(), HttpStatus.BAD_REQUEST);
+        }
         UserDetails user = userService.loadUserByUsername(request.getEmail());
         final String jwtToken = jwtService.generateToken(user);
         return new AuthenticationResponse(jwtToken);
