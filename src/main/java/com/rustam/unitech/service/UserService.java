@@ -13,21 +13,24 @@ import org.springframework.stereotype.Service;
 @Service
 @RequiredArgsConstructor
 public class UserService implements UserDetailsService {
-    private final UserRepository userRepository;
-
+    private final UserRepository repository;
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        return userRepository.
+        return repository.
                 findByEmail(username)
                 .orElseThrow(() -> new UniTechException(ResponseDetails.USER_NOT_FOUND));
     }
 
     public boolean isExist(String username) {
-        return userRepository.findByEmail(username).isPresent();
+        return repository.findByEmail(username).isPresent();
     }
 
     public User create(User user) {
-        return userRepository.save(user);
+        boolean isUserExist = isExist(user.getEmail());
+        if (isUserExist)
+            throw new UniTechException(ResponseDetails.USERNAME_EXIST);
+
+        return repository.save(user);
     }
 }

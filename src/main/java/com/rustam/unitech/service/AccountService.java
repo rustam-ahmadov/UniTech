@@ -12,7 +12,6 @@ import com.rustam.unitech.repository.AccountRepository;
 import com.rustam.unitech.utils.CardNumberGenerator;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -22,21 +21,11 @@ import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
-public class AccountService {
-    private final AccountRepository accountRepository;
-
-    private final UserDetailsService userDetailsService;
-
-    public AccountResponse find(final AccountRequest request) {
-        final int pin = request.getPin();
-        Account account = accountRepository.
-                findByPin(pin)
-                .orElseThrow(() -> new UniTechException(ResponseDetails.ACCOUNT_NOT_FOUND));
-        return AccountResponse.from(account);
-    }
+public class AccountService implements AccountServiceInterface {
+    private final AccountRepository repository;
 
     public AccountResponse create(final AccountCreationRequest request) {
-        Optional<Account> optionalAccount = accountRepository.
+        Optional<Account> optionalAccount = repository.
                 findByPin(request.getPin());
         if (optionalAccount.isPresent())
             throw new UniTechException(ResponseDetails.ACCOUNT_ALREADY_EXIST);
@@ -50,7 +39,7 @@ public class AccountService {
         account.setActive(true);
         account.setLastActivity(LocalDateTime.now());
         account.setUser(user);
-        accountRepository.save(account);
+        repository.save(account);
 
         return AccountResponse.from(account);
     }
@@ -63,13 +52,13 @@ public class AccountService {
                 .collect(Collectors.toList());
     }
 
-    public ResponseDetails transfer(final TransferRequest request) {
+    public String transfer(final TransferRequest request) {
 
-        Account accountFrom = accountRepository.
+        Account accountFrom = repository.
                 findByPin(request.getFromPin())
                 .orElseThrow(() -> new UniTechException(ResponseDetails.ACCOUNT_NOT_FOUND));
 
-        Account accountTo = accountRepository.
+        Account accountTo = repository.
                 findByPin(request.getToPin())
                 .orElseThrow(() -> new UniTechException(ResponseDetails.TRANSFER_TO_NON_EXISTING_ACCOUNT));
 
@@ -100,9 +89,9 @@ public class AccountService {
         double receiverLeftAmount = receiverAmount + transferAmount;
         accountTo.setAmount(receiverLeftAmount);
 
-        accountRepository.save(accountFrom);
-        accountRepository.save(accountTo);
+        repository.save(accountFrom);
+        repository.save(accountTo);
 
-        return ResponseDetails.TRANSACTION_COMPLETED;
+        return ResponseDetails.TRANSACTION_COMPLETED.getMessage();
     }
 }

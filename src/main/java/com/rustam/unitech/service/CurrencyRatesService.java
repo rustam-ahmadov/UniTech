@@ -31,7 +31,6 @@ public class CurrencyRatesService {
     }
 
 
-
     //region private methods
     private void updateRates() {
         rates = externalApi.getRates();
@@ -39,6 +38,7 @@ public class CurrencyRatesService {
     }
 
     private boolean isRatesUpToDate() {
+        //just for demo
         LocalDateTime updatedTime = externalApi.getUpdatedTime();
         int updDay = updatedTime.getDayOfYear();
         int updHour = updatedTime.getHour();
@@ -59,7 +59,7 @@ public class CurrencyRatesService {
             isUptoDate = false;
 
         //same day and hour but at least one min ago
-        if (updMin < reqMin)
+        if (reqMin < updMin)
             isUptoDate = false;
 
         return isUptoDate;

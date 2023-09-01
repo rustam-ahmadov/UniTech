@@ -19,30 +19,26 @@ import java.util.List;
 @RequiredArgsConstructor
 @RequestMapping("/unitech/account")
 public class AccountController {
-    private final AccountService accountService;
+    private final AccountService service;
 
     @PostMapping("/create")
     public ResponseEntity<AccountResponse> create(@RequestBody @Valid AccountCreationRequest request) {
-        return ResponseEntity.status(HttpStatus.CREATED)
-                .body(accountService.create(request));
-    }
-
-    @PostMapping
-    public ResponseEntity<AccountResponse> get(@RequestBody @Valid AccountRequest request) {
-        return ResponseEntity.ok(accountService.find(request));
+        return ResponseEntity
+                .status(HttpStatus.CREATED)
+                .body(service.create(request));
     }
 
     @GetMapping("/all")
     public ResponseEntity<List<AccountResponse>> getAll() {
-        return ResponseEntity.status(HttpStatus.CREATED)
-                .body(accountService.getAll());
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(service.getAll());
     }
 
     @PostMapping("/transfer")
     public ResponseEntity<String> transfer(@RequestBody @Valid TransferRequest request) {
-        ResponseDetails details = accountService.transfer(request);
         return ResponseEntity
-                .status(details.getHttpStatus())
-                .body(details.getMessage());
+                .status(HttpStatus.OK)
+                .body(service.transfer(request));
     }
 }

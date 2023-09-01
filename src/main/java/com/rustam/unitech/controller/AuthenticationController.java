@@ -1,12 +1,12 @@
 package com.rustam.unitech.controller;
 
 import com.rustam.unitech.dto.request.user.AuthenticationRequest;
-import com.rustam.unitech.dto.response.AuthenticationResponse;
 import com.rustam.unitech.dto.request.user.RegisterRequest;
-import com.rustam.unitech.enums.ResponseDetails;
+import com.rustam.unitech.dto.response.AuthenticationResponse;
 import com.rustam.unitech.service.AuthenticationService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -17,18 +17,17 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/unitech/auth")
 @RequiredArgsConstructor
 public class AuthenticationController {
-    private final AuthenticationService authenticationService;
+    private final AuthenticationService service;
 
     @PostMapping("/register")
-    public ResponseEntity<String> register(@RequestBody @Valid RegisterRequest request) {
-        ResponseDetails response = authenticationService.register(request);
+    public ResponseEntity<?> register(@RequestBody @Valid RegisterRequest request) {
         return ResponseEntity
-                .status(response.getHttpStatus())
-                .body(response.getMessage());
+                .status(HttpStatus.CREATED)
+                .body(service.register(request));
     }
 
     @PostMapping("/authenticate")
     public ResponseEntity<AuthenticationResponse> authenticate(@RequestBody AuthenticationRequest request) {
-        return ResponseEntity.ok(authenticationService.authenticate(request));
+        return ResponseEntity.ok(service.authenticate(request));
     }
 }

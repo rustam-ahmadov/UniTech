@@ -21,6 +21,7 @@ import java.util.function.Function;
 @Service
 public class JwtService {
 
+    //30 minutes
     private static final long EXP_TIME = 1000 * 60 * 30;
     private static final String SECRET_KEY = "b0949e6c264a637b7f2ed8e620287d8ef8ee5fcbdc19ab00acf79dcf04aaf158";
 
